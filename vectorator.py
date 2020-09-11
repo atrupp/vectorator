@@ -42,10 +42,10 @@ CHATTINESS = MULTS[config.chattiness]
 
 # In the config file users can set a volume (1-5) for Vector's voice and sounds
 VOL = {
-    1: audio.RobotVolumeLevel.LOW, 
-    2: audio.RobotVolumeLevel.MEDIUM_LOW, 
-    3: audio.RobotVolumeLevel.MEDIUM, 
-    4: audio.RobotVolumeLevel.MEDIUM_HIGH, 
+    1: audio.RobotVolumeLevel.LOW,
+    2: audio.RobotVolumeLevel.MEDIUM_LOW,
+    3: audio.RobotVolumeLevel.MEDIUM,
+    4: audio.RobotVolumeLevel.MEDIUM_HIGH,
     5: audio.RobotVolumeLevel.HIGH
 }
 
@@ -62,7 +62,7 @@ JOKE_ANIM = [
     "OnboardingWakeWordSuccess"
 ]
 
-# Set up dictionaries for the event names and timestamps 
+# Set up dictionaries for the event names and timestamps
 dic = {}
 ts = {}
 
@@ -72,31 +72,31 @@ weird = ["weird", "odd", "strange", "very weird", "crazy", "bizarre", "remarkabl
 scary = ["scary", "frightening", "very scary", "terrifying", "alarming", "daunting", "frightful", "grim", "harrowing", "shocking"]
 interesting = ["interesting", "weird", "strange", "curious", "fascinating", "intriguing", "provocative", "thought-provoking", "unusual", "captivating", "amazing"]
 
-# Load the jokes into a list called 'jokes'. Try local, then download. Need to figure out a better way to do do this... 
+# Load the jokes into a list called 'jokes'. Try local, then download. Need to figure out a better way to do do this...
 try:
     with open("jokes.txt", 'r') as f:
         jokes = [line.rstrip('\n') for line in f]
 except:
     jokes = []
-    content=urllib.request.urlopen("http://www.cuttergames.com/vector/jokes.txt") 
-    
+    content=urllib.request.urlopen("http://www.cuttergames.com/vector/jokes.txt")
+
     for line in content:
         line = line.decode("utf-8")
         jokes.append(line.rstrip('\n'))
 
-# Load the facts into a list called 'facts'. Try local, then download. Need to figure out a better way to do do this... 
+# Load the facts into a list called 'facts'. Try local, then download. Need to figure out a better way to do do this...
 try:
     with open("facts.txt", 'r') as f:
         facts = [line.rstrip('\n') for line in f]
 except:
     facts = []
-    content=urllib.request.urlopen("http://www.cuttergames.com/vector/facts.txt") 
-    
+    content=urllib.request.urlopen("http://www.cuttergames.com/vector/facts.txt")
+
     for line in content:
         line = line.decode("utf-8")
         facts.append(line.rstrip('\n'))
 
-# Try to load local dialogue file. On exception, load file from website. Need to figure out a better way to do do this... 
+# Try to load local dialogue file. On exception, load file from website. Need to figure out a better way to do do this...
 try:
     with open('dialogue.csv') as csvfile:
         cr = csv.reader(csvfile, delimiter=',')
@@ -124,12 +124,12 @@ except:
 for key, value in ts.items():
     ts[key] = datetime.strptime(value,'%Y-%m-%d %H:%M:%S')
 
-# This sets up the event name dictionary -- it needs the event names from CSV (above) 
+# This sets up the event name dictionary -- it needs the event names from CSV (above)
 for index, row in enumerate(dlg):
     event_name = dlg[index][NAME]
     if event_name not in ts:
         now = datetime.now()
-        ts[event_name] = now - timedelta(seconds = 100) 
+        ts[event_name] = now - timedelta(seconds = 100)
         ts[event_name + "_next"] = now + timedelta(seconds = 10)
         ts["greeting_next"] = now
     if event_name != "" and event_name != "NAME":
@@ -145,7 +145,7 @@ def save_timestamps():
             value = datetime.strftime(value,"%Y-%m-%d %H:%M:%S")
             writer.writerow([key, value])
 
-# With 10 lines of dialogue, the first line will be spoken 28% of the time, the 5th line 9%, and the last line less than 1% 
+# With 10 lines of dialogue, the first line will be spoken 28% of the time, the 5th line 9%, and the last line less than 1%
 def get_low(low,high):
     nums = []
     nums.append(random.randint(low,high))
@@ -156,7 +156,7 @@ def get_low(low,high):
 # This takes the line Vector is about to say and replaces anything in curly brackets with either a random word, or the name of the last seen human
 def randomizer(say):
     global LAST_NAME
-    if "{name}" in say: 
+    if "{name}" in say:
         if "last_saw_name" in ts and (datetime.now() - ts["last_saw_name"]).total_seconds() < 5: # Saw a specific face within last 5 seconds
             say = say.replace("{name}", LAST_NAME)
         else:
@@ -177,12 +177,12 @@ def vector_react(arg):
     if arg == "pass": # This adds a bit of controllable randomness to some of the random dialogues (jokes, telling the time, etc.)
         print("Instead of attempting a random comment, I chose to pass this time...")
         return
-    
+
     now = datetime.now()
     if arg not in ts:
         ts[arg] = now - timedelta(seconds = 100) # Fixes problem for new installs where Vector thinks everything JUST happened
-        ts[arg +"_next"] = now + timedelta(seconds = random.randint(2,15)) # Don't want him trying to say everything at once 
-    if now > ts[arg + "_next"]: # If the time for the [event/trigger]_next timestamp has passed, that event is available 
+        ts[arg +"_next"] = now + timedelta(seconds = random.randint(2,15)) # Don't want him trying to say everything at once
+    if now > ts[arg + "_next"]: # If the time for the [event/trigger]_next timestamp has passed, that event is available
         if arg == "sleeping":
             say_sleep(arg)
         else:
@@ -193,12 +193,12 @@ def vector_react(arg):
             print(f"Adding {to_add} seconds to {arg}.")
             ts[arg + "_next"] = now + timedelta(seconds = to_add) # Update ts with the next time Vector will be able to speak on that event/trigger
             ts[arg] = datetime.now() # Update the event in ts so I have a timestamp for when event/trigger occurred
-            save_timestamps() 
-            say(arg) 
+            save_timestamps()
+            say(arg)
     else:
         if arg != "news_intro": print(f"Vector isn't ready to talk about {arg} yet.")
 
-# This makes Vector talk by looking up dialogue in the dlg file 
+# This makes Vector talk by looking up dialogue in the dlg file
 def say(arg_name):
     row_start = dic[arg_name]
     row_end = row_start + int(dlg[row_start][LINES]) # Use row_start and LINES (from dialogue file) to figure out where the dialogue starts/stops
@@ -210,11 +210,11 @@ def say(arg_name):
     if arg_name == "fact_intro": to_say = to_say + get_fact() # if fact then add to end of intro
     if arg_name == "time_intro": to_say = to_say + get_time() # Randomly announce the time
     if arg_name == "random_weather": to_say = get_weather("random_weather") # Randomly announce a weather fact
-    
+
     to_say = randomizer(to_say) # This replaces certain words with synonyms
     max_attempts = 15 # Had to add this after the last update. I'm having trouble getting control of Vector to speak
     current_attempts = 0
-    
+
     while current_attempts < max_attempts:
         current_attempts = current_attempts + 1
         try:
@@ -300,7 +300,7 @@ def get_weather(var):
         weather.append(f". And now for some weather. Today in {config.loc_city} {config.loc_region}, it will be {forecast_condition}, with a temperature of {forecast_temp_high} degrees, and wind speeds around {forecast_wind}{wind_speed}. Right now, it is {current_temp} degrees.")
         weather.append(f". Right now in {config.loc_city} {config.loc_region}, it is {current_temp} degrees and {current_condition}. Later today, it will be {forecast_condition}, with a high of {forecast_temp_high} degrees and a low of {forecast_temp_low} degrees.")
         weather.append(f". Here's your local weather. The temperature in {config.loc_city} {config.loc_region} right now, is {current_temp} degrees. The high today will be {forecast_temp_high} degrees, and look for a low of around {forecast_temp_low}. Winds will be {forecast_wind}{wind_speed}.")
-        weather.append(f". Moving to the weather. It is currently {current_condition} in {config.loc_city} {config.loc_region}. Later today it will be {forecast_condition}, with an average temperature of {forecast_temp_avg} degrees, and wind speeds around {forecast_wind}{wind_speed}.") 
+        weather.append(f". Moving to the weather. It is currently {current_condition} in {config.loc_city} {config.loc_region}. Later today it will be {forecast_condition}, with an average temperature of {forecast_temp_avg} degrees, and wind speeds around {forecast_wind}{wind_speed}.")
         return(random.choice(weather))
 
     # At random times, Vector will see a face and announce something about the weather
@@ -375,11 +375,11 @@ with anki_vector.Robot(enable_face_detection=True) as robot:
     ctime = time.time() + random.randint(200,400)
     carry_flag = False
 
-    robot.events.subscribe(on_wake_word, Events.wake_word) 
+    robot.events.subscribe(on_wake_word, Events.wake_word)
     robot.events.subscribe(on_cube_detected, Events.robot_observed_object)
 
     while True:
-    
+
         if robot.status.is_being_held:
             vector_react("picked_up")
 
