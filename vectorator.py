@@ -205,11 +205,11 @@ def say(arg_name):
     num_row = get_low(row_start,row_end-1)
     to_say = dlg[num_row][MOOD] # Vector's default mood is "normal", eventually he will say different dialogue based on his mood
     if arg_name == "wake_word" : return # If wake_word then skip talking for a bit
-    if arg_name == "news_intro": to_say = to_say + get_news() + get_weather("forecast") # if news then add to end of intro
+ #   if arg_name == "news_intro": to_say = to_say + get_news() + get_weather("forecast") # if news then add to end of intro
     if arg_name == "joke_intro": to_say = to_say + get_joke() # if joke then add to end of intro
     if arg_name == "fact_intro": to_say = to_say + get_fact() # if fact then add to end of intro
     if arg_name == "time_intro": to_say = to_say + get_time() # Randomly announce the time
-    if arg_name == "random_weather": to_say = get_weather("random_weather") # Randomly announce a weather fact
+  #  if arg_name == "random_weather": to_say = get_weather("random_weather") # Randomly announce a weather fact
 
     to_say = randomizer(to_say) # This replaces certain words with synonyms
     max_attempts = 15 # Had to add this after the last update. I'm having trouble getting control of Vector to speak
@@ -295,43 +295,43 @@ def get_weather(var):
         wind_speed = " kilometers per hour"
 
     # In the morning, Vector tells the news and weather when he sees a face
-    if var == "forecast":
-        weather = []
-        weather.append(f". And now for some weather. Today in {config.loc_city} {config.loc_region}, it will be {forecast_condition}, with a temperature of {forecast_temp_high} degrees, and wind speeds around {forecast_wind}{wind_speed}. Right now, it is {current_temp} degrees.")
-        weather.append(f". Right now in {config.loc_city} {config.loc_region}, it is {current_temp} degrees and {current_condition}. Later today, it will be {forecast_condition}, with a high of {forecast_temp_high} degrees and a low of {forecast_temp_low} degrees.")
-        weather.append(f". Here's your local weather. The temperature in {config.loc_city} {config.loc_region} right now, is {current_temp} degrees. The high today will be {forecast_temp_high} degrees, and look for a low of around {forecast_temp_low}. Winds will be {forecast_wind}{wind_speed}.")
-        weather.append(f". Moving to the weather. It is currently {current_condition} in {config.loc_city} {config.loc_region}. Later today it will be {forecast_condition}, with an average temperature of {forecast_temp_avg} degrees, and wind speeds around {forecast_wind}{wind_speed}.")
-        return(random.choice(weather))
+  # if var == "forecast":
+   #     weather = []
+    #    weather.append(f". And now for some weather. Today in {config.loc_city} {config.loc_region}, it will be {forecast_condition}, with a temperature of {forecast_temp_high} degrees, and wind speeds around {forecast_wind}{wind_speed}. Right now, it is {current_temp} degrees.")
+     #   weather.append(f". Right now in {config.loc_city} {config.loc_region}, it is {current_temp} degrees and {current_condition}. Later today, it will be {forecast_condition}, with a high of {forecast_temp_high} degrees and a low of {forecast_temp_low} degrees.")
+      #  weather.append(f". Here's your local weather. The temperature in {config.loc_city} {config.loc_region} right now, is {current_temp} degrees. The high today will be {forecast_temp_high} degrees, and look for a low of around {forecast_temp_low}. Winds will be {forecast_wind}{wind_speed}.")
+    #    weather.append(f". Moving to the weather. It is currently {current_condition} in {config.loc_city} {config.loc_region}. Later today it will be {forecast_condition}, with an average temperature of {forecast_temp_avg} degrees, and wind speeds around {forecast_wind}{wind_speed}.")
+     #   return(random.choice(weather))
 
     # At random times, Vector will see a face and announce something about the weather
-    if var == "random_weather":
-        rnd_weather = []
-        if {current_temp} != {current_temp_feelslike}:
-            rnd_weather.append(f"The current temperature is {current_temp} degrees, but it feels like {current_temp_feelslike} degrees.")
-        rnd_weather.append(f"In {config.loc_city} right now, the temperature is {current_temp} degrees.")
-        if current_wind < 15:
-            rnd_weather.append(f"Right now in {config.loc_city} it is a relatively calm {current_temp} degrees, with winds at {current_wind}{wind_speed}.")
-        else:
-            rnd_weather.append(f"In {config.loc_city} right now, it is a blustery {current_temp} degrees, with winds at {current_wind}{wind_speed}.")
-        rnd_weather.append(f"In {config.loc_city}, at this moment, the weather is {current_condition}.")
-        rnd_weather.append(f"Hello. It is currently {current_temp} degrees in {config.loc_city}. The humidity is {current_humidity} percent.")
-        return(random.choice(rnd_weather))
+  #  if var == "random_weather":
+   #     rnd_weather = []
+    #    if {current_temp} != {current_temp_feelslike}:
+     #       rnd_weather.append(f"The current temperature is {current_temp} degrees, but it feels like {current_temp_feelslike} degrees.")
+   #     rnd_weather.append(f"In {config.loc_city} right now, the temperature is {current_temp} degrees.")
+   #     if current_wind < 15:
+    #        rnd_weather.append(f"Right now in {config.loc_city} it is a relatively calm {current_temp} degrees, with winds at {current_wind}{wind_speed}.")
+    #    else:
+     #       rnd_weather.append(f"In {config.loc_city} right now, it is a blustery {current_temp} degrees, with winds at {current_wind}{wind_speed}.")
+     #   rnd_weather.append(f"In {config.loc_city}, at this moment, the weather is {current_condition}.")
+      #  rnd_weather.append(f"Hello. It is currently {current_temp} degrees in {config.loc_city}. The humidity is {current_humidity} percent.")
+     #   return(random.choice(rnd_weather))
 
 # I was using an API, but the free account only gave me a few hundred accesses per week. Then I found an RSS feed that works great!
 # Users can specify how many news stories to hear. If more than one I randomly choose a bridge to say between them (like "In other news...")
-def get_news():
-    say_count = 0
-    bridge = [". And in other news. ", ". In OTHER news... ", ". Taking a look at other news. ", ". Here is another news item. ", ". Here is an interesting story. "]
-    news = ""
-    news_count = config.news_count
-    feed = feedparser.parse("https://www.cbsnews.com/latest/rss/world")
-    for post in feed.entries:
-        news = news + post.description
-        say_count += 1
-        if say_count == news_count:
-            return news
-        else:
-            news = news + random.choice(bridge)
+#def get_news():
+ #   say_count = 0
+  #  bridge = [". And in other news. ", ". In OTHER news... ", ". Taking a look at other news. ", ". Here is another news item. ", ". Here is an interesting story. "]
+#    news = ""
+ #   news_count = config.news_count
+  #  feed = feedparser.parse("https://www.cbsnews.com/latest/rss/world")
+   # for post in feed.entries:
+    #    news = news + post.description
+     #   say_count += 1
+      #  if say_count == news_count:
+       #     return news
+       # else:
+        #    news = news + random.choice(bridge)
 
 def get_fact():
     num = len(facts)
@@ -404,8 +404,8 @@ with anki_vector.Robot(enable_face_detection=True) as robot:
         if robot.status.is_button_pressed:
             vector_react("button_pressed")
 
-        if datetime.now().hour < 12 and (datetime.now() - ts["last_saw_face"]).total_seconds() < 5: # It's morning and Vector recently saw a face
-            vector_react("news_intro")
+    #    if datetime.now().hour < 12 and (datetime.now() - ts["last_saw_face"]).total_seconds() < 5: # It's morning and Vector recently saw a face
+      #      vector_react("news_intro")
 
         distance_mm = robot.proximity.last_sensor_reading.distance.distance_mm
         if distance_mm in range(50,60):

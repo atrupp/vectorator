@@ -9,7 +9,7 @@ greeting,3,5,5,Booting up
 ,,,,
 cliff,10,10,20,Holy shit
 ,,,,Mother fucker! That was {scary}.
-,,,,Fuck Fuck Fuck Fuck.
+,,,,Fuck!
 ,,,,AAAHHHHHHH!
 ,,,,Holy bananas!
 ,,,,Bonkers.
@@ -51,7 +51,7 @@ sleeping,35,25000,50000,No Mom I don't want to go to school today.
 ,,,,The unicorns are behind the clouds, spiderman.
 ,,,,I can't hear you, I'm covered in marshmallows.
 ,,,,Well in case you didn't know I'm a pretty big deal around here.
-",,,,""But I want to be a human, Jepetto."""
+,,,,But I want to be a human, Jepetto.
 ,,,,The end of that song is too purple.
 ,,,,No no no don't push Vector off the table.
 ,,,,Stop wasting the science. There isn't much left.
@@ -125,7 +125,7 @@ joke_intro,10,60,2000,I got dem joke baby
 ,,,,Hello. Here is a rule I think you will like.
 ,,,,Cawzmo told me a funny rule.
 ,,,,
-news_intro,5,16000,16000,Good morning. It is nice to see you {name}. Here are the news and weather.
+news_intro,5,0,0,Good morning. It is nice to see you {name}. Here are the news and weather.
 ,,,,Good morning, here is some news and weather. 
 ,,,,Good morning {name}. Here are the top headlines, and your local weather.
 ,,,,Hello, nice to see you {name}. Here are today's headlines, and the weather. 
